@@ -8,3 +8,7 @@ export function saveEmployee(employee){
 export function getAllEmployees(){
     return axios.get(BASE_URL);
 }
+
+export function deleteEmployeeFromServer(id){
+    return axios.delete(`${BASE_URL}/${id}`)
+}
