@@ -1,10 +1,14 @@
 import { StatusCodes } from "http-status-codes";
 import { useEffect, useState } from "react";
 import { Alert, Button, Container, Modal, Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllEmployees } from "../actions/EmployeeActions";
 import { deleteEmployeeFromServer, getAllEmployees } from "../services/EmployeeService";
 
 export function EmployeesList() {
-    const [employees, setEmployees] = useState([]);
+    const employees=useSelector(state=> state.employeeReducer);
+    console.log(employees);
+    const dispatch=useDispatch();
     const [employeeId, setEmployeeId] = useState('');
     const [showDialog, setShowDialog] = useState(false);
     const closeModal= ()=>{
@@ -13,20 +17,15 @@ export function EmployeesList() {
     const openModal= ()=>{
         setShowDialog(true);
     }
-    async function fetchEmployees() {
-        const response = await getAllEmployees()
-        if (response.status == StatusCodes.OK) {
-            setEmployees(response.data)
-        }
-    }
+    
     const deleteEmployee =async ()=>{
         await deleteEmployeeFromServer(employeeId);
         closeModal();
-        fetchEmployees();
+        dispatch(fetchAllEmployees());
     }
     useEffect(() => {
+        dispatch(fetchAllEmployees());
         
-        fetchEmployees();
     }, []);
     return (
         <>

@@ -1,31 +1,35 @@
 import { Form, Formik, Field, ErrorMessage } from "formik";
-import { Component } from "react";
 import { Alert, Button, Col, Container, Modal, Row } from "react-bootstrap";
-import { saveEmployee } from "../services/EmployeeService";
 import { registrationSchema } from "../validation-schemas/RegistrationSchema";
 import '../assets/styles/CommonStyle.css';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { registerEmployee } from "../actions/EmployeeActions";
 
-export class EmployeeRegistrationForm extends Component {
-    constructor() {
-        super();
-        this.state = {
-            isModalOpened: false
-        }
+export function EmployeeRegistrationForm()  {
+    const [isModalOpened,setIsModalOpened]=useState(false)
+    const dispatch=useDispatch()
+    const closeModal = () => {
+        setIsModalOpened(false)
     }
-    closeModal = () => {
-        this.setState({ isModalOpened: false });
-    }
-    openModal = () => {
-        this.setState({ isModalOpened: true });
+    const openModal = () => {
+        setIsModalOpened(true)
     }
 
-    handleSubmit = (values) => {
+    const handleSubmit = (values) => {
         console.log(values);
+        dispatch(registerEmployee(values))
+        .then(()=>{
+            openModal();
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
     }
-    initialValues = {
+    const initialValues = {
         empId: '', name: '', phone: '', salary: ''
     };
-    render() {
+    
         return (
             <>
                 <Container className="mt-4 text-center">
@@ -34,9 +38,9 @@ export class EmployeeRegistrationForm extends Component {
                     </Alert>
                 </Container>
                 <Container className="mt-4">
-                    <Formik initialValues={this.initialValues}
+                    <Formik initialValues={initialValues}
                         validationSchema={registrationSchema}
-                        onSubmit={this.handleSubmit} >
+                        onSubmit={handleSubmit} >
                         {
                             (formik) => {
                                 const { errors, touched, isValid, dirty } = formik;
@@ -89,13 +93,13 @@ export class EmployeeRegistrationForm extends Component {
                         }
                     </Formik>
                 </Container>
-                <Modal show={this.state.isModalOpened} onHide={this.closeModal}>
+                <Modal show={isModalOpened} onHide={closeModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Success</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>Woohoo, EMployee registered!</Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.closeModal}>
+                        <Button variant="danger" onClick={closeModal}>
                             Close
                         </Button>
 
@@ -103,5 +107,5 @@ export class EmployeeRegistrationForm extends Component {
                 </Modal>
             </>
         );
-    }
+    
 }

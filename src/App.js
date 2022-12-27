@@ -3,7 +3,6 @@ import { EmployeeRegistrationForm } from "./components/EmployeeRegistrationForm"
 import { EmployeesList } from "./components/EmployeesList";
 import { Home } from "./components/Home";
 import { NavigationBar } from "./components/NavigationBar";
-import { RegistrationForm } from "./components/RegistrationForm";
 
 function App() {
   return (
